@@ -1,2 +1,2 @@
 # birdeye_scrape
-Scraping data from birdeye
+Scraping data from birdeye.so
