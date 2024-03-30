@@ -5,8 +5,11 @@ from bs4 import BeautifulSoup
 
 url = "https://birdeye.so/find-trades/"
 
-# Send a GET request to the URL
-response = requests.get(url)
+headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36"}
+cookies = {
+    # Add cookies here
+}
+response = requests.get(url, headers=headers, cookies=cookies)
 
 # Check if the request was successful (status code 200)
 if response.status_code == 200:
@@ -30,4 +33,4 @@ if response.status_code == 200:
     for trade_info in trade_data:
         print(trade_info)
 else:
-    print("Failed to retrieve data from the website")
+    print(f"Response Code: {response.status_code}")
