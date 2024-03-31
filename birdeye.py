@@ -1,36 +1,28 @@
 # https://birdeye.so/find-trades/
 
-import requests
-from bs4 import BeautifulSoup
+import time
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
-url = "https://birdeye.so/find-trades/"
+# Launch the browser
+driver = webdriver.Chrome()  # Or use any other browser driver
 
-headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36"}
-cookies = {
-    # Add cookies here
-}
-response = requests.get(url, headers=headers, cookies=cookies)
+# Navigate to the main page
+driver.get('https://birdeye.so/')
 
-# Check if the request was successful (status code 200)
-if response.status_code == 200:
-    # Parse the HTML content
-    soup = BeautifulSoup(response.content, "html.parser")
+# Wait for the iframe to be available
+iframe_locator = (By.XPATH, "//iframe[contains(@id, 'cf-chl-widget')]")
+WebDriverWait(driver, 20).until(EC.frame_to_be_available_and_switch_to_it(iframe_locator))
 
-    # Extract the trade data
-    trade_data = []
-    trades = soup.find_all("div", class_="trade")
-    for trade in trades:
-        # Extract relevant information from each trade element
-        # Adjust the code based on the structure of the website and the data you want to extract
-        trade_info = {
-            "title": trade.find("h2").text.strip(),
-            "description": trade.find("p").text.strip(),
-            # Add more fields as needed
-        }
-        trade_data.append(trade_info)
+# Find the checkbox inside the iframe
+checkbox_label_locator = (By.CLASS_NAME, "ctp-checkbox-label")
+checkbox_label = WebDriverWait(driver, 15).until(EC.visibility_of_element_located(checkbox_label_locator))
 
-    # Print the extracted data
-    for trade_info in trade_data:
-        print(trade_info)
-else:
-    print(f"Response Code: {response.status_code}")
+# Find the checkbox input element within the label
+checkbox_input_locator = (By.TAG_NAME, "input")
+checkbox_input = checkbox_label.find_element(*checkbox_input_locator)
+
+# Click the checkbox
+checkbox_input.click()
